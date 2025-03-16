@@ -1,0 +1,105 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+}
+
+.title {
+  font-size: 100px;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px;
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+}
+
+.cell {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid aqua;
+  background-color: #222;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.letter {
+  font-size: 60px;
+  color: whitesmoke;
+  font-weight: bold;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+.error-message {
+  color: red;
+  font-size: 40px;
+  margin-top: 10px;
+  font-weight: bold;
+  animation: shake 0.5s;
+}
+
+.win-message {
+  color: green;
+  font-size: 40px;
+  margin-top: 10px;
+  font-weight: bold;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.game-over-message {
+  color: whitesmoke;
+  font-size: 40px;
+  margin-top: 10px;
+  font-weight: bold;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.answer {
+  font-size: 20px;
+  font-weight: bold;
+}
