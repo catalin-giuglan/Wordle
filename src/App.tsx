@@ -57,7 +57,7 @@ function App() {
 
     if (!words.includes(word.toLowerCase())) {
       setInvalidWord(true)
-      setErrorMessage("Cuvântul nu există în dicționar!")
+      setErrorMessage("The word is not in the dictionary!")
       setTimeout(() => {
         setInvalidWord(false)
         setErrorMessage("")
@@ -99,7 +99,7 @@ function App() {
     setGuesses(newGuesses)
 
     if (word === solution) {
-      setWinMessage("Felicitări! Ai ghicit cuvântul! 🎉")
+      setWinMessage("Congratulations! You won! 🎉")
       setCurrentRow(6) // End the game
     } else {
       if (currentRow === 5) {
