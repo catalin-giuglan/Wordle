@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import "./App.css"
 import words from "./words.json"
-import InputHandler from "./InputHandler"
+import Keyboard from "./Keyboard"
 
 function App() {
   const [solution, setSolution] = useState("")
@@ -13,22 +13,44 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("")
   const [winMessage, setWinMessage] = useState("")
   const [gameOverMessage, setGameOverMessage] = useState("")
-  const [currentWord, setCurrentWord] = useState("")
   const [letterStatuses, setLetterStatuses] = useState<Array<Array<string>>>(
     Array(6)
       .fill([])
       .map(() => Array(5).fill("")),
   )
+  const [keyboardLetterStatuses, setKeyboardLetterStatuses] = useState<Record<string, string>>({})
 
   useEffect(() => {
     const fetchWord = () => {
       const randomWord = words[Math.floor(Math.random() * words.length)]
       setSolution(randomWord.toUpperCase())
-      console.log("Solution:", randomWord.toUpperCase()) // For debugging
+      console.log("Solution:", randomWord.toUpperCase())
+      console.log("Words:", words)
     }
 
     fetchWord()
   }, [])
+
+  const updateKeyboardStatuses = (word: string, rowStatuses: string[]) => {
+    const newKeyboardStatuses = { ...keyboardLetterStatuses }
+
+    for (let i = 0; i < word.length; i++) {
+      const letter = word[i]
+      const status = rowStatuses[i]
+
+      // Only update if the new status is better than the existing one
+      // Priority: correct > present > absent
+      if (
+        !newKeyboardStatuses[letter] ||
+        (newKeyboardStatuses[letter] === "absent" && status !== "absent") ||
+        (newKeyboardStatuses[letter] === "present" && status === "correct")
+      ) {
+        newKeyboardStatuses[letter] = status
+      }
+    }
+
+    setKeyboardLetterStatuses(newKeyboardStatuses)
+  }
 
   const checkWord = (word: string) => {
     if (currentRow >= 6) return
@@ -70,6 +92,7 @@ function App() {
     }
 
     setLetterStatuses(newStatuses)
+    updateKeyboardStatuses(word, newStatuses[currentRow])
 
     const newGuesses = [...guesses]
     newGuesses[currentRow] = word
@@ -85,8 +108,6 @@ function App() {
       }
       setCurrentRow(currentRow + 1)
     }
-
-    setCurrentWord("") // Reset current word for next guess
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -106,9 +127,20 @@ function App() {
     }
   }
 
-  const handleEnter = (word: string) => {
-    if (word.length === 5) {
+  const handleKeyPress = (key: string) => {
+    if (currentRow >= 6) return
+
+    const newGuesses = [...guesses]
+    const word = newGuesses[currentRow]
+
+    if (key === "ENTER" && word.length === 5) {
       checkWord(word)
+    } else if (key === "⌫") {
+      newGuesses[currentRow] = word.slice(0, -1)
+      setGuesses(newGuesses)
+    } else if (/^[A-Z]$/.test(key) && word.length < 5) {
+      newGuesses[currentRow] = word + key
+      setGuesses(newGuesses)
     }
   }
 
@@ -145,14 +177,14 @@ function App() {
           </div>
         ))}
       </div>
-      {/* <div className="answer">
-        {solution}
-      </div> */}
+
       {errorMessage && <div className="error-message">{errorMessage}</div>}
       {winMessage && <div className="win-message">{winMessage}</div>}
       {gameOverMessage && <div className="game-over-message">{gameOverMessage}</div>}
 
-      <InputHandler onEnter={handleEnter} currentWord={currentWord} setCurrentWord={setCurrentWord} />
+      <div>
+      <Keyboard letterStatuses={keyboardLetterStatuses} onKeyPress={handleKeyPress} />
+      </div>
     </div>
   )
 }
